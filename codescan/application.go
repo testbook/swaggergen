@@ -507,6 +507,9 @@ func (a *typeIndex) processPackage(pkg *packages.Package) error {
 					continue
 				}
 				pp.ID = pkg.Name+"."+pp.ID
+				if len(pp.Tags) == 0 {
+					pp.Tags = []string{pkg.Name}
+				}
 				a.Routes = append(a.Routes, pp)
 			}
 		}
