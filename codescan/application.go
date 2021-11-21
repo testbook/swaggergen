@@ -506,6 +506,7 @@ func (a *typeIndex) processPackage(pkg *packages.Package) error {
 					debugLog("operation %s %s is ignored due to tag rules", pp.Method, pp.Path)
 					continue
 				}
+				pp.ID = pkg.Name+"."+pp.ID
 				a.Routes = append(a.Routes, pp)
 			}
 		}
