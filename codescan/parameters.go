@@ -174,6 +174,7 @@ func (p *parameterBuilder) Build(operations map[string]*spec.Operation) error {
 	// once type name is found convert it to a schema, by looking up the schema in the
 	// parameters dictionary that got passed into this parse method
 	for _, opid := range p.decl.OperationIDS() {
+		opid = p.decl.Pkg.Name + "." + opid
 		operation, ok := operations[opid]
 		if !ok {
 			operation = new(spec.Operation)

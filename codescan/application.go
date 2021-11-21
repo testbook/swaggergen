@@ -506,7 +506,7 @@ func (a *typeIndex) processPackage(pkg *packages.Package) error {
 					debugLog("operation %s %s is ignored due to tag rules", pp.Method, pp.Path)
 					continue
 				}
-				pp.ID = pkg.Name+"."+pp.ID
+				pp.ID = pkg.Name + "." + pp.ID
 				if len(pp.Tags) == 0 {
 					pp.Tags = []string{pkg.Name}
 				}

@@ -128,6 +128,7 @@ func (r *responseBuilder) Build(responses map[string]spec.Response) error {
 	// parameters dictionary that got passed into this parse method
 
 	name, _ := r.decl.ResponseNames()
+	name = r.decl.Pkg.Name + "." + name
 	response := responses[name]
 	debugLog("building response: %s", name)
 

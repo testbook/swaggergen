@@ -61,7 +61,8 @@ func (r *routesBuilder) Build(tgt *spec.Paths) error {
 	sp := new(sectionedParser)
 	sp.setTitle = func(lines []string) { op.Summary = joinDropLast(lines) }
 	sp.setDescription = func(lines []string) { op.Description = joinDropLast(lines) }
-	sr := newSetResponses(r.definitions, r.responses, opResponsesSetter(op))
+	srs := opResponsesSetter(op)
+	sr := newSetResponses(r.definitions, r.responses, srs)
 	spa := newSetParams(r.parameters, opParamSetter(op))
 	sp.taggers = []tagParser{
 		newMultiLineTagParser("Consumes", newMultilineDropEmptyParser(rxConsumes, opConsumesSetter(op)), false),
@@ -74,6 +75,13 @@ func (r *routesBuilder) Build(tgt *spec.Paths) error {
 	}
 	if err := sp.Parse(r.route.Remaining); err != nil {
 		return fmt.Errorf("operation (%s): %v", op.ID, err)
+	}
+	if op.Responses == nil {
+		if resp, ok := r.responses[op.ID]; ok {
+			srs(nil, map[int]spec.Response{
+				200: resp,
+			})
+		}
 	}
 
 	if tgt.Paths == nil {
