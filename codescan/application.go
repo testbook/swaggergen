@@ -307,7 +307,11 @@ func (s *scanCtx) DeclForType(t types.Type) (*entityDecl, bool) {
 	case *types.Pointer:
 		return s.DeclForType(tpe.Elem())
 	case *types.Named:
-		return s.FindDecl(tpe.Obj().Pkg().Path(), tpe.Obj().Name())
+		pkg := tpe.Obj().Pkg()
+		if pkg == nil {
+			return nil, false
+		}
+		return s.FindDecl(pkg.Path(), tpe.Obj().Name())
 
 	default:
 		log.Printf("unknown type to find the package for [%T]: %s", t, t.String())
