@@ -308,7 +308,7 @@ func (r *responseBuilder) buildFromStruct(decl *entityDecl, tpe *types.Struct, r
 			continue
 		}
 
-		name, ignore, _, err := parseTag(afld, "json")
+		name, ignore, _, err := parseTag(afld, "json", true)
 		if err != nil {
 			return err
 		}

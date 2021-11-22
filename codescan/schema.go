@@ -640,12 +640,18 @@ func (s *schemaBuilder) buildFromStruct(decl *entityDecl, st *types.Struct, sche
 			continue
 		}
 
-		_, ignore, _, err := parseTag(afld, "json")
-		if err != nil {
-			return err
-		}
+		name, ignore, _, err := parseTag(afld, "doc", false)
 		if ignore {
 			continue
+		}
+		if name == "" {
+			name, ignore, _, err = parseTag(afld, "json", true)
+			if err != nil {
+				return err
+			}
+			if ignore {
+				continue
+			}
 		}
 
 		if !allOfMember(afld.Doc) {
@@ -736,10 +742,7 @@ func (s *schemaBuilder) buildFromStruct(decl *entityDecl, st *types.Struct, sche
 			continue
 		}
 
-		name, ignore, isString, err := parseTag(afld, "json")
-		if err != nil {
-			return err
-		}
+		name, ignore, isString, err := parseTag(afld, "doc", false)
 		if ignore {
 			for seenTagName, seenFieldName := range seen {
 				if seenFieldName == fld.Name() {
@@ -748,6 +751,21 @@ func (s *schemaBuilder) buildFromStruct(decl *entityDecl, st *types.Struct, sche
 				}
 			}
 			continue
+		}
+		if name == "" {
+			name, ignore, isString, err = parseTag(afld, "json", true)
+			if err != nil {
+				return err
+			}
+			if ignore {
+				for seenTagName, seenFieldName := range seen {
+					if seenFieldName == fld.Name() {
+						delete(tgt.Properties, seenTagName)
+						break
+					}
+				}
+				continue
+			}
 		}
 
 		ps := tgt.Properties[name]
@@ -1032,8 +1050,8 @@ func (t tagOptions) Name() string {
 	return t[0]
 }
 
-func parseTag(field *ast.Field, tag string) (name string, ignore bool, isString bool, err error) {
-	if len(field.Names) > 0 {
+func parseTag(field *ast.Field, tag string, returnDefault bool) (name string, ignore bool, isString bool, err error) {
+	if returnDefault && len(field.Names) > 0 {
 		name = field.Names[0].Name
 	}
 	if field.Tag == nil || len(strings.TrimSpace(field.Tag.Value)) == 0 {

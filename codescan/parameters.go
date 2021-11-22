@@ -346,16 +346,22 @@ func (p *parameterBuilder) buildFromStruct(decl *entityDecl, tpe *types.Struct, 
 			}
 		}
 
-		tag := "json"
-		if in == "query" {
-			tag = "query"
-		}
-		name, ignore, _, err := parseTag(afld, tag)
-		if err != nil {
-			return err
-		}
+		name, ignore, _, err := parseTag(afld, "doc", false)
 		if ignore {
 			continue
+		}
+		if name == "" {
+			tag := "json"
+			if in == "query" {
+				tag = "query"
+			}
+			name, ignore, _, err = parseTag(afld, tag, true)
+			if err != nil {
+				return err
+			}
+			if ignore {
+				continue
+			}
 		}
 
 		ps := seen[name]
