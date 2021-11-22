@@ -153,12 +153,13 @@ DECLS:
 func (s *schemaBuilder) Build(definitions map[string]spec.Schema) error {
 	s.inferNames()
 
-	schema := definitions[s.Name]
+	name := s.decl.Pkg.Name + "." + s.Name
+	schema := definitions[name]
 	err := s.buildFromDecl(s.decl, &schema)
 	if err != nil {
 		return err
 	}
-	definitions[s.Name] = schema
+	definitions[name] = schema
 	return nil
 }
 
@@ -898,7 +899,7 @@ func (s *schemaBuilder) buildEmbedded(tpe types.Type, schema *spec.Schema, seen 
 
 func (s *schemaBuilder) makeRef(decl *entityDecl, prop swaggerTypable) error {
 	nm, _ := decl.Names()
-	ref, err := spec.NewRef("#/definitions/" + nm)
+	ref, err := spec.NewRef("#/definitions/" + decl.Pkg.Name + "." + nm)
 	if err != nil {
 		return err
 	}

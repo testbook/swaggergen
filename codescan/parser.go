@@ -1433,6 +1433,7 @@ func (ss *setOpResponses) Parse(lines []string) error {
 			if err != nil {
 				return err
 			}
+			//refTarget = "abc."+refTarget
 			// A possible exception for having a definition
 			if _, ok := ss.responses[refTarget]; !ok {
 				if _, ok := ss.definitions[refTarget]; ok {
