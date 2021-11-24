@@ -1,4 +1,4 @@
-module swaggergen
+module github.com/testbook/swaggergen
 
 go 1.16
 

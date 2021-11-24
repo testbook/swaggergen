@@ -9,7 +9,7 @@ import (
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/spec"
 
-	"swaggergen/codescan"
+	"github.com/testbook/swaggergen/codescan"
 )
 
 type list []string
